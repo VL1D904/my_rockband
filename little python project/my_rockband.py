@@ -811,9 +811,10 @@ class Start:
             self.draw()
             pygame.display.flip()
 
-
+# Класс кружков для барабанов
 class Circle(pygame.sprite.Sprite):
     def __init__(self, number):
+        # инициализация спрайта
         global drumers
         super().__init__()
         self.image = pygame.image.load('images/purple.png')
@@ -823,6 +824,7 @@ class Circle(pygame.sprite.Sprite):
         self.radius = 150
         self.iteration = 0
 
+        # Появление кружков
         while True:
             self.rect.topleft = (
                 (randint(0, 900 - self.rect.width),
@@ -832,6 +834,7 @@ class Circle(pygame.sprite.Sprite):
                 drumers.circles.add(self)
                 break
 
+    # изменение радиуса и итераций
     def change_iteration(self):
         self.iteration += 1
         return self.iteration
@@ -846,9 +849,11 @@ class Circle(pygame.sprite.Sprite):
     def get_number(self):
         return self.number
 
+    # отрисовка
     def draw_circle(self, center, radius):
         pygame.draw.circle(screen, pygame.Color(155, 1, 189), center, radius, 5)
 
+    # отрисовка порядкового номера кружка
     def create_text(self, number, rect):
         font = pygame.font.Font(None, 54)
         text = font.render(str(number), True, (255, 255, 255))
@@ -856,11 +861,14 @@ class Circle(pygame.sprite.Sprite):
         text_rect.center = rect.center
         screen.blit(text, text_rect.center)
 
+    # обработка нажатия
     def clicked(self, event):
         if self.rect.collidepoint(event.pos):
             return True
         return False
 
+
+# класс барабанов
 class Drum:
     def __init__(self):
         self.background = pygame.image.load('images/drumm.png')
@@ -882,6 +890,7 @@ class Drum:
         self.button_restart = False
         self.restart = Drum_restart()
 
+    # Отрисовка
     def draw(self):
         self.screen.blit(self.background, self.background_rect)
         for i, circle in enumerate(self.circles):
@@ -895,8 +904,7 @@ class Drum:
             screen.blit(self.restart.image, self.restart.rect)
             self.button_restart = True
             
-
-
+    # Появление кружков
     @run_in_thread
     def new_circle(self, music):
         pygame.mixer.music.load("musics/engel.mp3")
@@ -910,6 +918,10 @@ class Drum:
         self.win = self.stop = self.score >= len(music) * 60
 
     def main(self):
+        self.restart = None
+        self.win = True
+        self.stop = False
+        self.button_restart = False
         self.new_circle(self.BEATS)
         while not self.stop:
             for event in pygame.event.get():
